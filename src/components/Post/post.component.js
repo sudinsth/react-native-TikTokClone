@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
-import React from 'react';
-import {View, StyleSheet, Dimensions, Text, Image} from 'react-native';
+import React, {useState} from 'react';
+import {View, StyleSheet, Dimensions, Text, Image, TouchableOpacity} from 'react-native';
 
 import Entypo from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -10,7 +10,18 @@ import Fontisto from 'react-native-vector-icons/Fontisto';
 
 import Video from 'react-native-video';
 export const Post = (props) => {
-  const {post} = props;
+  const [post, setPost] = useState(props.post);
+  const [isLiked, setIsLiked] = useState(false);
+
+  const onLikePress = () => {
+    const likesToAdd = isLiked ? -1 : 1;
+    setPost({
+      ...post,
+      likes: post.likes + likesToAdd,
+    });
+    setIsLiked(!isLiked);
+  };
+
   return (
     <View style={styles.container}>
       <Image 
@@ -28,10 +39,10 @@ export const Post = (props) => {
             />
           </View>
 
-            <View style={styles.iconContainer} >
-              <AntDesign name={'heart'} size={40} color='#fff' />
+            <TouchableOpacity style={styles.iconContainer} onPress={onLikePress}>
+              <AntDesign name={'heart'} size={40} color={isLiked? 'red':'#fff'} />
               <Text style={styles.statsLabel}>{post.likes}</Text>
-            </View>
+            </TouchableOpacity>
             
             <View style={styles.iconContainer} >
               <FontAwesome name={'commenting'} size={40} color='#fff' />
@@ -78,7 +89,7 @@ export const Post = (props) => {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    height: Dimensions.get('window').height,
+    height: Dimensions.get('window').height - 55,
     backgroundColor: '#fff',
   },
   video: {
